@@ -67,7 +67,7 @@ function App() {
         <Text>Enter a word!</Text>
         <Box display="flex" gap="1rem" alignItems="center" margin="1rem">
           <Input
-            placeholder=""
+            placeholder="Enter a 6 letter word."
             size="lg"
             value={chosenWord}
             onChange={(e) => setChosenWord(e.target.value)}
@@ -78,7 +78,7 @@ function App() {
             onClick={() => {
               setStarted(true);
             }}
-            disabled={started}
+            disabled={started || chosenWord.length > 6}
           >
             Start!
           </Button>
@@ -105,7 +105,13 @@ function App() {
                 fontSize="1.2rem"
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
-                  target.style.backgroundColor = "red";
+                  if (target.style.backgroundColor !== "black") {
+                    target.style.backgroundColor = "black";
+                    target.style.color = "white";
+                  } else if (target.style.backgroundColor === "black") {
+                    target.style.backgroundColor = "#f7fafc";
+                    target.style.color = "black";
+                  }
                 }}
               >
                 {LetterGenerator()}

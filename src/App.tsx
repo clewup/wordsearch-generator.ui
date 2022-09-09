@@ -17,6 +17,7 @@ import {
 function App() {
   const [loaded, setLoaded] = useState(true);
   const [chosenWord, setChosenWord] = useState("");
+  const [started, setStarted] = useState(false);
 
   const maximumLetters = 169; // has to return a solid number on square root.
   const columns = Math.sqrt(maximumLetters);
@@ -34,8 +35,34 @@ function App() {
     return randomLetter;
   };
 
-  const WordGenerator = () => {};
-  WordGenerator();
+  const word: string = chosenWord;
+
+  const WordGenerator = () => {
+    const letterSquares = document.querySelectorAll(
+      "div#letterSquare"
+    ) as NodeListOf<Element>;
+    const letterSquaresArray = Array.prototype.slice.call(letterSquares);
+
+    const random = Math.floor(Math.random() * maximumLetters);
+    let selection = random;
+    const finalSelection = selection - columns * word.length;
+
+    if (finalSelection >= 0) {
+      for (let i = 0; i < word.length; i++) {
+        const selectedSquare = letterSquaresArray[selection];
+        //selectedSquare.style.backgroundColor = "red";
+        selectedSquare.innerHTML = word.charAt(i);
+        selection = selection - columns;
+      }
+    } else {
+      WordGenerator();
+    }
+  };
+
+  setTimeout(() => {
+    WordGenerator();
+  }, 1000);
+
   return (
     <>
       <Heading margin="1rem 0" textAlign="center">
@@ -49,8 +76,17 @@ function App() {
             size="lg"
             value={chosenWord}
             onChange={(e) => setChosenWord(e.target.value)}
+            disabled={started}
           />
-          <Button colorScheme="green">Add!</Button>
+          <Button
+            colorScheme="green"
+            onClick={() => {
+              setStarted(true);
+            }}
+            disabled={started}
+          >
+            Start!
+          </Button>
         </Box>
       </Box>
       <Box width="40vw" margin="0 auto"></Box>
@@ -61,7 +97,7 @@ function App() {
         margin="1rem auto"
         border="1px solid black"
       >
-        <Skeleton isLoaded={loaded} width={totalSizeVw} height={totalSizeVw}>
+        <Skeleton isLoaded={started} width={totalSizeVw} height={totalSizeVw}>
           <SimpleGrid columns={columns}>
             {[...Array(maximumLetters)].map((e, i) => (
               <Box
@@ -72,6 +108,10 @@ function App() {
                 textAlign="center"
                 lineHeight={letterSizeVw}
                 fontSize="1.2rem"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.backgroundColor = "red";
+                }}
               >
                 {LetterGenerator()}
               </Box>

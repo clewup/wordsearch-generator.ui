@@ -4,10 +4,6 @@ import {
   Box,
   Text,
   Input,
-  Wrap,
-  WrapItem,
-  Center,
-  Container,
   Heading,
   SimpleGrid,
   Skeleton,
@@ -15,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 
 function App() {
-  const [loaded, setLoaded] = useState(true);
   const [chosenWord, setChosenWord] = useState("");
   const [started, setStarted] = useState(false);
 

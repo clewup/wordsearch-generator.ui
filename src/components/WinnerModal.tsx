@@ -17,24 +17,21 @@ const WinnerModal = (props: any) => {
       isOpen={isOpen}
       onClose={onClose}
       blockScrollOnMount={true}
-      closeOnOverlayClick={true}
+      closeOnOverlayClick={false}
       isCentered
       motionPreset="slideInBottom"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Winner!</ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
           <Text>Great job! You found the word.</Text>
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
           <Button
-            variant="ghost"
+            variant="outline"
+            colorScheme="green"
             onClick={() => {
               Reset();
               onClose();

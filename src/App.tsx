@@ -36,9 +36,14 @@ function App() {
     onOpen();
   }
 
+  function Reset() {
+    setChosenWord("");
+    setStarted(false);
+  }
+
   return (
     <>
-      <WinnerModal isOpen={isOpen} onClose={onClose} />
+      <WinnerModal isOpen={isOpen} onClose={onClose} Reset={Reset} />
       <Heading margin="1rem 0" textAlign="center">
         Wordsearch Generator
       </Heading>

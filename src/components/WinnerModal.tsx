@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 const WinnerModal = (props: any) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, Reset } = props;
   return (
     <Modal
       isOpen={isOpen}
@@ -36,7 +36,8 @@ const WinnerModal = (props: any) => {
           <Button
             variant="ghost"
             onClick={() => {
-              window.location.reload();
+              Reset();
+              onClose();
             }}
           >
             Play Again

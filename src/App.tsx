@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import LetterGenerator from "./utils/LetterGenerator";
+import WordInserter from "./utils/WordInserter";
 import {
   Box,
   Text,
@@ -8,11 +10,14 @@ import {
   SimpleGrid,
   Skeleton,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
+import WinnerModal from "./components/WinnerModal";
 
 function App() {
   const [chosenWord, setChosenWord] = useState("");
   const [started, setStarted] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const maximumLetters = 169; // has to return a solid number on square root.
   const columns = Math.sqrt(maximumLetters);
@@ -20,46 +25,20 @@ function App() {
   const letterSizeVw = `${letterSize}vw`;
   const totalSize = columns * letterSize;
   const totalSizeVw = `${totalSize}vw`;
-
-  const LetterGenerator = () => {
-    const characters = "abcdefghijklmnopqrstuvwxyz";
-    const charactersLength = characters.length;
-    const randomLetter = characters.charAt(
-      Math.floor(Math.random() * charactersLength)
-    );
-    return randomLetter;
-  };
-
-  const word: string = chosenWord;
-
-  const WordGenerator = () => {
-    const letterSquares = document.querySelectorAll(
-      "div#letterSquare"
-    ) as NodeListOf<Element>;
-    const letterSquaresArray = Array.prototype.slice.call(letterSquares);
-
-    const random = Math.floor(Math.random() * maximumLetters);
-    let selection = random;
-    const finalSelection = selection - columns * word.length;
-
-    if (finalSelection >= 0) {
-      for (let i = 0; i < word.length; i++) {
-        const selectedSquare = letterSquaresArray[selection];
-        //selectedSquare.style.backgroundColor = "red";
-        selectedSquare.innerHTML = word.charAt(i);
-        selection = selection - columns;
-      }
-    } else {
-      WordGenerator();
-    }
-  };
+  const word: string = chosenWord.toLowerCase();
+  const selectedLetters: string[] = [];
 
   setTimeout(() => {
-    WordGenerator();
+    WordInserter({ maximumLetters, columns, word });
   }, 1000);
+
+  function GameWon() {
+    onOpen();
+  }
 
   return (
     <>
+      <WinnerModal isOpen={isOpen} onClose={onClose} />
       <Heading margin="1rem 0" textAlign="center">
         Wordsearch Generator
       </Heading>
@@ -78,7 +57,7 @@ function App() {
             onClick={() => {
               setStarted(true);
             }}
-            disabled={started || chosenWord.length > 6}
+            disabled={started || chosenWord.length > 6 || chosenWord.length < 3}
           >
             Start!
           </Button>
@@ -90,7 +69,6 @@ function App() {
         height={totalSizeVw}
         background="background.primary"
         margin="1rem auto"
-        border="1px solid black"
       >
         <Skeleton isLoaded={started} width={totalSizeVw} height={totalSizeVw}>
           <SimpleGrid columns={columns}>
@@ -98,6 +76,7 @@ function App() {
               <Box
                 key={i}
                 id="letterSquare"
+                className="letter-square-inactive"
                 width={letterSizeVw}
                 height={letterSizeVw}
                 textAlign="center"
@@ -105,12 +84,29 @@ function App() {
                 fontSize="1.2rem"
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
-                  if (target.style.backgroundColor !== "black") {
-                    target.style.backgroundColor = "black";
-                    target.style.color = "white";
-                  } else if (target.style.backgroundColor === "black") {
-                    target.style.backgroundColor = "#f7fafc";
-                    target.style.color = "black";
+                  if (target.classList.contains("letter-square-inactive")) {
+                    target.classList.replace(
+                      "letter-square-inactive",
+                      "letter-square-active"
+                    );
+                    selectedLetters.push(target.innerHTML);
+                    const selectedWord = selectedLetters.join("");
+                    if (selectedWord === word) {
+                      GameWon();
+                    }
+                  } else if (
+                    target.classList.contains("letter-square-active")
+                  ) {
+                    target.classList.replace(
+                      "letter-square-active",
+                      "letter-square-inactive"
+                    );
+                    const index = selectedLetters.indexOf(target.innerHTML);
+                    selectedLetters.splice(index, 1);
+                    const selectedWord = selectedLetters.join("");
+                    if (selectedWord === word) {
+                      GameWon();
+                    }
                   }
                 }}
               >
@@ -123,5 +119,4 @@ function App() {
     </>
   );
 }
-
 export default App;

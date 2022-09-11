@@ -9,8 +9,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const WinnerModal = (props: any) => {
-  const { isOpen, onClose, Reset } = props;
+const LoserModal = (props: any) => {
+  const { isOpen, onClose, Reset, reset } = props;
   return (
     <Modal
       isOpen={isOpen}
@@ -22,17 +22,18 @@ const WinnerModal = (props: any) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Winner!</ModalHeader>
+        <ModalHeader>You lost!</ModalHeader>
         <ModalBody>
-          <Text>Great job! You found the word.</Text>
+          <Text>Better luck next time!</Text>
         </ModalBody>
 
         <ModalFooter>
           <Button
             variant="outline"
-            colorScheme="green"
+            colorScheme="red"
             onClick={() => {
               Reset();
+              reset();
               onClose();
             }}
           >
@@ -43,4 +44,4 @@ const WinnerModal = (props: any) => {
     </Modal>
   );
 };
-export default WinnerModal;
+export default LoserModal;

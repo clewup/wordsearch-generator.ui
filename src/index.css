@@ -7,6 +7,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.app {
+  background-color: #121212;
+  height: 100vh;
+  width: 100vw;
+  padding: 2rem;
+}
+
 .letter-square-active {
   background-color: black;
   color: white;

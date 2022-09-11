@@ -4,7 +4,6 @@ import LetterGenerator from "./utils/LetterGenerator";
 import WordInserter from "./utils/WordInserter";
 import {
   Box,
-  Text,
   Input,
   Heading,
   SimpleGrid,
@@ -12,14 +11,18 @@ import {
   Button,
   useDisclosure,
   FormControl,
-  FormHelperText,
-  FormErrorMessage,
+  FormLabel,
+  Switch,
 } from "@chakra-ui/react";
 import WinnerModal from "./components/WinnerModal";
+import Timer from "./components/Timer";
+import { useTimer } from "use-timer";
 
 function App() {
   const [chosenWord, setChosenWord] = useState("");
   const [started, setStarted] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [timed, setTimed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   function containsNumbers(str: string) {
@@ -42,21 +45,23 @@ function App() {
 
   function GameWon() {
     onOpen();
-    setStarted(false);
+    setFinished(true);
   }
 
   function Reset() {
     setChosenWord("");
+    setTimed(false);
+    setFinished(false);
     setStarted(false);
   }
 
   return (
-    <>
+    <div className="app">
       <WinnerModal isOpen={isOpen} onClose={onClose} Reset={Reset} />
-      <Heading margin="1rem 0" textAlign="center">
+      <Heading textAlign="center" color="white">
         Wordsearch Generator
       </Heading>
-      <Box width="30vw" textAlign="center" margin="0 auto" height="6rem">
+      <Box width="30vw" textAlign="center" margin="0 auto" height="7rem">
         <FormControl
           isInvalid={isError}
           display="flex"
@@ -73,6 +78,7 @@ function App() {
               value={chosenWord}
               onChange={(e) => setChosenWord(e.target.value)}
               disabled={started}
+              variant="solid"
             />
 
             <Button
@@ -81,17 +87,54 @@ function App() {
                 setStarted(true);
               }}
               disabled={
-                started || chosenWord.length > 6 || chosenWord.length < 3
+                started ||
+                chosenWord.length > 6 ||
+                chosenWord.length < 3 ||
+                isError
               }
             >
               Start!
             </Button>
           </Box>
-          {isError && (
-            <FormErrorMessage textAlign="center">
-              Your word must only contain letters.
-            </FormErrorMessage>
-          )}
+          <Box display="flex" gap="2rem" margin="1rem 0">
+            {!started ? (
+              <FormControl display="flex" alignItems="center">
+                <FormLabel htmlFor="timed" mb="0" color="white">
+                  Timed?
+                </FormLabel>
+                <Switch
+                  id="timed"
+                  onChange={() => {
+                    if (timed === true) {
+                      setTimed(false);
+                    } else {
+                      setTimed(true);
+                    }
+                  }}
+                />
+              </FormControl>
+            ) : timed ? (
+              <Timer
+                started={started}
+                finished={finished}
+                setFinished={setFinished}
+                Reset={Reset}
+              />
+            ) : (
+              <FormControl display="flex" alignItems="center">
+                <FormLabel htmlFor="timed" mb="0" color="white">
+                  Timed?
+                </FormLabel>
+                <Switch id="timed" isDisabled={true} />
+              </FormControl>
+            )}
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="easy" mb="0" color="white">
+                Easy?
+              </FormLabel>
+              <Switch id="easy" />
+            </FormControl>
+          </Box>
         </FormControl>
       </Box>
       <Box width="40vw" margin="0 auto"></Box>
@@ -102,7 +145,7 @@ function App() {
         margin="1rem auto"
       >
         <Skeleton
-          isLoaded={started}
+          isLoaded={started && !finished}
           width={totalSizeVw}
           height={totalSizeVw}
           fadeDuration={1}
@@ -153,7 +196,7 @@ function App() {
           </SimpleGrid>
         </Skeleton>
       </Box>
-    </>
+    </div>
   );
 }
 export default App;

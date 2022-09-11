@@ -16,13 +16,13 @@ import {
 } from "@chakra-ui/react";
 import WinnerModal from "./components/WinnerModal";
 import Timer from "./components/Timer";
-import { useTimer } from "use-timer";
 
 function App() {
   const [chosenWord, setChosenWord] = useState("");
   const [started, setStarted] = useState(false);
   const [finished, setFinished] = useState(false);
   const [timed, setTimed] = useState(false);
+  const [easy, setEasy] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   function containsNumbers(str: string) {
@@ -30,7 +30,8 @@ function App() {
   }
   const isError = containsNumbers(chosenWord);
 
-  const maximumLetters = 100; // has to return a solid number on square root.
+  let maximumLetters = 100; // has to return a solid number on square root.
+  if (easy) maximumLetters = 49;
   const columns = Math.sqrt(maximumLetters);
   const letterSize = 4;
   const letterSizeVw = `${letterSize}vw`;
@@ -58,10 +59,11 @@ function App() {
   return (
     <div className="app">
       <WinnerModal isOpen={isOpen} onClose={onClose} Reset={Reset} />
-      <Heading textAlign="center" color="white">
-        Wordsearch Generator
-      </Heading>
-      <Box width="30vw" textAlign="center" margin="0 auto" height="7rem">
+
+      <Box width="30vw" textAlign="center" margin="0 auto" height="20vh">
+        <Heading textAlign="center" color="white">
+          Wordsearch Generator
+        </Heading>
         <FormControl
           isInvalid={isError}
           display="flex"
@@ -132,7 +134,17 @@ function App() {
               <FormLabel htmlFor="easy" mb="0" color="white">
                 Easy?
               </FormLabel>
-              <Switch id="easy" />
+              <Switch
+                id="easy"
+                isDisabled={started}
+                onChange={() => {
+                  if (easy === true) {
+                    setEasy(false);
+                  } else {
+                    setEasy(true);
+                  }
+                }}
+              />
             </FormControl>
           </Box>
         </FormControl>

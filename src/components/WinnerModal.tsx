@@ -22,9 +22,9 @@ const WinnerModal = (props: any) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Winner!</ModalHeader>
+        <ModalHeader>Stellar job!</ModalHeader>
         <ModalBody>
-          <Text>Great job! You found the word.</Text>
+          <Text>You found the word.</Text>
         </ModalBody>
 
         <ModalFooter>

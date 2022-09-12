@@ -6,7 +6,7 @@ import LoserModal from "./LoserModal";
 const Timer = (props: any) => {
   const { started, finished, setFinished, Reset } = props;
   const { time, start, pause, reset } = useTimer({
-    initialTime: 30,
+    initialTime: 15,
     timerType: "DECREMENTAL",
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

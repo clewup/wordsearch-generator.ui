@@ -31,7 +31,7 @@ function App() {
   const isError = containsNumbers(chosenWord);
 
   let maximumLetters = 100; // has to return a solid number on square root.
-  if (easy) maximumLetters = 49;
+  if (easy) maximumLetters = 64;
   const columns = Math.sqrt(maximumLetters);
   const letterSize = 4;
   const letterSizeVw = `${letterSize}vw`;
@@ -75,7 +75,7 @@ function App() {
         >
           <Box display="flex" gap="1rem" alignItems="center" marginTop="1rem">
             <Input
-              placeholder="Enter a 6 letter word."
+              placeholder="Enter a word"
               size="lg"
               value={chosenWord}
               onChange={(e) => setChosenWord(e.target.value)}
@@ -149,12 +149,11 @@ function App() {
           </Box>
         </FormControl>
       </Box>
-      <Box width="40vw" margin="0 auto"></Box>
       <Box
         width={totalSizeVw}
         height={totalSizeVw}
         background="background.primary"
-        margin="1rem auto"
+        margin="auto auto"
       >
         <Skeleton
           isLoaded={started && !finished}
